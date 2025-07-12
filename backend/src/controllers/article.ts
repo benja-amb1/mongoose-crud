@@ -44,3 +44,43 @@ export const addArticle = async (req: ArticleRequest, res: Response): Promise<an
     return res.status(500).json({ status: false, message: "Server error." });
   }
 };
+
+
+//here we use ArticleRequest
+export const deleteArticle = async (req: ArticleRequest, res: Response): Promise<any> => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ status: false, message: "Invalid article ID." });
+    }
+
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({ status: false, message: "Article not found." });
+    }
+
+    // delete images from disk
+    if (article.images && article.images.length > 0) {
+      for (const imagePath of article.images) {
+        try {
+          fs.unlinkSync(path.resolve(imagePath)); // ¡¡¡IMPORTANT!!!
+        } catch (err) {
+          console.warn(`Could not delete image ${imagePath}:`, err);
+        }
+      }
+    }
+
+    // delete article from DB
+    await Article.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      status: true,
+      message: "Article deleted successfully.",
+    });
+
+  } catch (error) {
+    console.error("Error deleting article:", error);
+    return res.status(500).json({ status: false, message: "Server error." });
+  }
+};
