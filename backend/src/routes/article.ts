@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { addArticle, deleteArticle } from '../controllers/article';
+import { addArticle, deleteArticle, updateArticle } from '../controllers/article';
 
 // configure Multer storage
 const storage = multer.diskStorage({
@@ -32,8 +32,9 @@ const router = express.Router();
 
 router.post('/add-article', upload.array('file0', 10), addArticle); // works ✅
 
-
 router.delete('/delete-article/:id', deleteArticle); // works ✅
+
+router.put('/update-article/:id', upload.array('file0', 10), updateArticle); // works ✅
 
 
 export default router;
