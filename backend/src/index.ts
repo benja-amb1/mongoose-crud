@@ -15,7 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 
-app.use('/api/articles', ArticleRoutes)
+app.use('/api/articles', ArticleRoutes);
+app.use('/uploads', express.static('uploads')); //important to send to the frontend and be able to read the files
 
 
 const connection = async () => {
