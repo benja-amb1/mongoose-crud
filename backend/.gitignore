@@ -1,0 +1,9 @@
+# Ignora variables de entorno
+.env
+
+# Ignora dependencias de Node.js
+node_modules/
+
+# Ignora carpeta general de imágenes y su subcarpeta
+images/
+images/articles/
