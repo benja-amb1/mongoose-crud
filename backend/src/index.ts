@@ -16,7 +16,7 @@ app.use(cors());
 
 
 app.use('/api/articles', ArticleRoutes);
-app.use('/uploads', express.static('uploads')); //important to send to the frontend and be able to read the files
+app.use('/uploads', express.static('/images/articles')); //important to send to the frontend and be able to read the files
 
 
 const connection = async () => {
