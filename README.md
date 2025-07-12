@@ -5,3 +5,5 @@
 - **fs**: The Node.js File System module. It allows you to read, write, delete, and manage files and directories on the server.
 
 - **path**: A Node.js module used to handle and format file paths safely across different operating systems.
+
+[Español](https://github.com/benja-amb1/multer-crud-es)
