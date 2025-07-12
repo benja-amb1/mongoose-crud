@@ -3,6 +3,7 @@ import path from 'path'
 import cors from 'cors'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import ArticleRoutes from './routes/article'
 
 dotenv.config();
 
@@ -12,6 +13,9 @@ const PORT = process.env.PORT ?? 1234;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+
+app.use('/api/articles', ArticleRoutes)
 
 
 const connection = async () => {
