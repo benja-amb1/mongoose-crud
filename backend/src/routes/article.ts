@@ -33,7 +33,7 @@ const router = express.Router();
 router.post('/add-article', upload.array('file0', 10), addArticle); // works ✅
 
 
-router.delete('/delete-article/:id', deleteArticle);
+router.delete('/delete-article/:id', deleteArticle); // works ✅
 
 
 export default router;

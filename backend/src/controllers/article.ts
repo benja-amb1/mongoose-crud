@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import Article from "../models/article";
 import path from 'path'
 import fs from 'fs'
+import article from "../models/article";
 
 //here we use ArticleRequest
 export const addArticle = async (req: ArticleRequest, res: Response): Promise<any> => {
@@ -81,6 +82,59 @@ export const deleteArticle = async (req: ArticleRequest, res: Response): Promise
 
   } catch (error) {
     console.error("Error deleting article:", error);
+    return res.status(500).json({ status: false, message: "Server error." });
+  }
+};
+
+
+//here we use ArticleRequest
+export const updateArticle = async (req: ArticleRequest, res: Response): Promise<any> => {
+  try {
+    const { title, subtitle, content } = req.body;
+    const { id } = req.params;
+
+    // 1. Access uploaded files from Multer
+    const images = req.files as Express.Multer.File[];
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ status: false, message: "Invalid article ID." });
+    }
+
+    if (!title || !subtitle || !content) {
+      return res.status(400).json({ status: false, message: "Title, subtitle, and content are required." });
+    }
+
+
+    // 2. ¡IMPORTANT! findById
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({ status: false, message: "Article not found." });
+    }
+
+    // 3. delete old images
+    if (article.images && article.images.length > 0) {
+      for (const oldImg of article.images) {
+        try {
+          fs.unlinkSync(path.join(oldImg));
+        } catch (error) {
+          console.warn(`Error deleting image ${oldImg}:`, error);
+        }
+      }
+    }
+
+    // 4. Extract file paths from uploaded images
+    const imagesPath = images.map(img => img.path);
+
+    const updatedArticle = await Article.findByIdAndUpdate(
+      id,
+      { title, subtitle, content, images: imagesPath }, //return the imagesPath
+      { new: true }
+    );
+
+    res.status(200).json({ status: true, message: "Article updated successfully.", data: updatedArticle });
+
+  } catch (error) {
+    console.error("Error updating article:", error);
     return res.status(500).json({ status: false, message: "Server error." });
   }
 };
